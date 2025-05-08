@@ -1,0 +1,16 @@
+import pandas as pd
+from typing import Union
+
+def procesar_csv(file_path: str, formato: str = "filas") -> pd.DataFrame:
+    if formato == "linea":
+        df = pd.read_csv(file_path, sep=";", header=None)
+        df.columns = [f"param_{i}" for i in range(len(df.columns))]
+    else:
+        df = pd.read_csv(file_path)
+    
+    # Validación básica
+    required_columns = ["timestamp", "locomotora_id", "variable", "valor"]
+    if not all(col in df.columns for col in required_columns):
+        raise ValueError(f"CSV debe contener: {required_columns}")
+    
+    return df

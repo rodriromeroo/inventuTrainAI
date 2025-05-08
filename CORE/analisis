@@ -1,0 +1,13 @@
+from sklearn.ensemble import IsolationForest
+import pandas as pd
+import joblib
+
+def entrenar_modelo(df: pd.DataFrame, variables: list, output_path: str = "modelo_entrenado.pkl"):
+    model = IsolationForest(contamination=0.05, random_state=42)
+    model.fit(df[variables])
+    joblib.dump(model, output_path)
+    return model
+
+def predecir_anomalias(model, df: pd.DataFrame, variables: list) -> pd.DataFrame:
+    df["anomalia"] = model.predict(df[variables])
+    return df[df["anomalia"] == -1]  # Filtrar anomalías
